@@ -10,13 +10,12 @@ setup(name='bceutils',
       keywords='baidu bce command',
       author='velna.huang',
       author_email='velna.huang@amoros-tech.com',
-      url='',
+      url='https://github.com/AmorosTech/baidu-bceutils.git',
       license='Apache License 2.0',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          # -*- Extra requirements: -*-
           'bce-python-sdk>=0.8.0',
           'click>=8.0.0'
       ],
