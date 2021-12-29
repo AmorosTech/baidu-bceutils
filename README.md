@@ -1,6 +1,9 @@
 bceutils是一个基于bce-python-sdk和click项目的百度云命令行工具
 
+```shell
 bceutils --help
+```
+```
 Usage: bceutils [OPTIONS] COMMAND [ARGS]...
 
 Options:
@@ -10,3 +13,4 @@ Options:
 
 Commands:
   eipbp  带宽包命令
+```
