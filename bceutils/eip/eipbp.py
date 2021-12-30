@@ -1,19 +1,15 @@
 import click
 from bceutils.base import bce_cli
-from bceutils.base import bce_reponse_to_str
-import logging as log
+import bceutils.base as bcebase
 import json
 
-from baidubce.bce_client_configuration import BceClientConfiguration
 from baidubce.services.eip.eip_bp_client import EipBpClient
 
 @bce_cli.group()
 @click.pass_context
 def eipbp(ctx):
   """带宽包命令"""
-  config = BceClientConfiguration(credentials=ctx.obj['credentials'],
-                                endpoint='eip.{}.baidubce.com'.format(ctx.obj['region']))
-  ctx.obj['client'] = EipBpClient(config)
+  ctx.obj['client'] = EipBpClient(bcebase.create_bce_config('eip', credentials=ctx.obj['credentials'], region=ctx.obj['region']))
 
 
 @eipbp.command()
@@ -26,11 +22,8 @@ def eipbp(ctx):
 @click.option('--client-token', required=True, help='客户端幂等性token')
 def create(ctx, eip, eip_group_id, bandwidth_in_mbps, name, auto_release_time, client_token):
   """创建带宽包"""
-  local_vars = dict(locals())
-  del local_vars['ctx']
-  log.info("eipbp create: {}".format(local_vars))
   result = ctx.obj['client'].create_eip_bp(eip, eip_group_id, bandwidth_in_mbps, name, auto_release_time, client_token)
-  log.info(bce_reponse_to_str(result))
+  print(bcebase.bce_reponse_to_str(result))
 
 
 @eipbp.command()
@@ -39,6 +32,17 @@ def create(ctx, eip, eip_group_id, bandwidth_in_mbps, name, auto_release_time, c
 @click.option('--name', help='带宽包名称')
 @click.option('--bind-type', type=click.Choice(['eip', 'eipgroup'], case_sensitive=False), help='带宽包绑定类型')
 def list(ctx, id, name, bind_type):
+  """查询用户带宽包列表信息"""
   result = ctx.obj['client'].list_eip_bps(id=id, name=name, bind_type=bind_type)
-  log.info(bce_reponse_to_str(result))
+  print(bcebase.bce_reponse_to_str(result))
 
+
+@eipbp.command()
+@click.pass_context
+@click.option('--id', help='带宽包ID')
+@click.option('--new-bandwidth-in-mbps', help='带宽包名称')
+@click.option('--client-token', required=True, help='客户端幂等性token')
+def resize(ctx, id, new_bandwidth_in_mbps, client_token):
+  """调整带宽包带宽"""
+  result = ctx.obj['client'].resize_eip_bp(id, new_bandwidth_in_mbps, client_token=client_token)
+  print(bcebase.bce_reponse_to_str(result))

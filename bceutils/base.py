@@ -2,11 +2,14 @@ import click
 import json
 import os
 import logging as log
-from baidubce.auth.bce_credentials import BceCredentials
 from pathlib import Path
+from baidubce.auth.bce_credentials import BceCredentials
+from baidubce.bce_client_configuration import BceClientConfiguration
 
 bce_config_file_path = Path.home() / '.config/bceutils/config.json'
-
+bce_endpoints = {
+  'eip': 'eip.{region}.baidubce.com'
+}
 
 @click.group(invoke_without_command=True)
 @click.pass_context
@@ -36,4 +39,11 @@ def bce_cli(ctx, region, config):
 
 
 def bce_reponse_to_str(bce_response):
-  return json.dumps(bce_response, indent=2, default=lambda o: o.__dict__)
+  return json.dumps(json.loads(bce_response.raw_data), indent=2)
+
+def get_bce_endpoint(service, region=None):
+  return bce_endpoints[service].format(**{'region': region})
+
+def create_bce_config(service, credentials=None, region=None):
+  return BceClientConfiguration(credentials=credentials,
+                                endpoint=get_bce_endpoint(service, region=region))

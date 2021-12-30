@@ -9,7 +9,6 @@ log.basicConfig(
   )
 
 import bceutils.base as base
-from bceutils.eipbp import eipbp
 
 
 def main():
