@@ -1,18 +1,16 @@
 import click
 from bceutils.base import bce_cli
-from bceutils.base import bce_reponse_to_str
+import bceutils.base as bcebase
 import json
 
 from baidubce.bce_client_configuration import BceClientConfiguration
-from baidubce.services.eip.eip_bp_client import EipBpClient
+from baidubce.services.eip.eip_group_client import EipGroupClient
 
 @bce_cli.group()
 @click.pass_context
 def eipgroup(ctx):
   """共享带宽命令"""
-  config = BceClientConfiguration(credentials=ctx.obj['credentials'],
-                                endpoint='eip.{}.baidubce.com'.format(ctx.obj['region']))
-  ctx.obj['client'] = EipGroupClient(config)
+  ctx.obj['client'] = EipGroupClient(bcebase.create_bce_config('eip', credentials=ctx.obj['credentials'], region=ctx.obj['region']))
 
 
 @eipgroup.command()
@@ -25,6 +23,6 @@ def eipgroup(ctx):
 @click.option('--max-keys', help='每页包含的最大数量，最大数量不超过1000。缺省值为1000', default=1000)
 def list(ctx, id, name, status, marker, max_keys):
   """查询用户带宽包列表信息"""
-  result = ctx.obj['client'].list_eip_groups(id=id, name=name, bind_type=bind_type)
-  print(bce_reponse_to_str(result))
+  result = ctx.obj['client'].list_eip_groups()
+  print(bcebase.bce_reponse_to_str(result))
 
