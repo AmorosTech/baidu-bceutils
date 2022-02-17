@@ -40,7 +40,7 @@ def list(ctx, id, name, bind_type):
 @eipbp.command()
 @click.pass_context
 @click.option('--id', help='带宽包ID')
-@click.option('--new-bandwidth-in-mbps', help='带宽包名称')
+@click.option('--new-bandwidth-in-mbps', type=int, help='带宽包名称')
 @click.option('--client-token', required=True, help='客户端幂等性token')
 def resize(ctx, id, new_bandwidth_in_mbps, client_token):
   """调整带宽包带宽"""
